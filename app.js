@@ -45,6 +45,9 @@ nunjucks.configure('templates', {
 app.use(express.json());
 app.use(express.urlencoded());
 
+// Handle errors
+app.use(middlewares.logErrors);
+
 //
 // Controllers
 //
