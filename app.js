@@ -45,13 +45,9 @@ nunjucks.configure('templates', {
 app.use(express.json());
 app.use(express.urlencoded());
 
-// Handle errors
-app.use(middlewares.logErrors);
-
 //
 // Controllers
 //
-
 _.each(controllers, function(controller) {
     controller.apply({
         app: app,
@@ -62,12 +58,13 @@ _.each(controllers, function(controller) {
     });
 });
 
+// Handle errors
+app.use(middlewares.logErrors);
+
 //
 // Sockets
 //
-
 var authorizationIO = app.io.get('authorization');
-
 app.io.set('authorization', function(data, accept) {
     authorizationIO(data, function(err, res) {
         if (err) {
@@ -85,14 +82,11 @@ app.io.set('authorization', function(data, accept) {
 //
 // Mongo
 //
-
 mongoose.connect(settings.mongoURI);
-
 mongoose.connection.on('error', function (err) {
     if (err)
         console.warn(err);
 });
-
 mongoose.connection.on('disconnected', function() {
     mongoose.connect(settings.mongoURI);
 });
@@ -100,5 +94,4 @@ mongoose.connection.on('disconnected', function() {
 //
 // Go Time
 //
-
 app.listen(settings.port || 5000);
